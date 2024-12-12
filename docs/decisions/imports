@@ -1,0 +1,17 @@
+# Motivation for different imports
+
+# import-0001: sklearn
+# files: - logistic_regression_wrapper.py
+#        - random_forest_classifier_wrapper.py
+#        - random_forest_regressor_wrapper.py
+#        - sklearn_wrap.py
+# Date: 05-11-2024
+# Decision: import sklearn for regression and classification models
+# Status: Accepted
+# Motivation: Ease of use and lighter workload
+# Reason: Using the facade design pattern we can make a
+# more effective implementation of logistic regression, random forest classifier,
+# random forest regressor and lasso
+# and it saves time so that we can focus on other parts of the code
+# Limitations: More difficult to change functionality if needed
+# Alternatives: Make the class ourselves.

@@ -1,0 +1,28 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.2.0
+    hooks:
+      - id: trailing-whitespace # Trailing whitespace checker
+      - id: end-of-file-fixer # End-of-file newline checker
+      - id: check-yaml # YAML syntax checker
+      - id: check-added-large-files # Prevents you from committing large files
+      - id: check-ast # Python AST checker
+      - id: check-json # JSON syntax checker
+      - id: check-xml # XML syntax checker
+
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        args: ["--profile", "black"]
+  - repo: https://github.com/pycqa/flake8
+    rev: 6.1.0
+    hooks:
+      - id: flake8
+        args:
+          [
+            "--max-line-length",
+            "88",
+            "--extend-ignore",
+            "D100, SC200",
+          ]
