@@ -67,7 +67,8 @@ management = Management()
 
 options = glob("**/*.csv", recursive=True)
 
-path = st.selectbox("Select a dataset", options)
+dataset = None
+path = st.selectbox("Select a dataset", options, None)
 uploaded_file = st.file_uploader("Or upload a .csv file")
 
 if uploaded_file is not None and uploaded_file.type == "text/csv":
@@ -82,4 +83,5 @@ if path is not None:
     dataset = management.create(path)
 
 datasets = automl.registry.list(type="dataset")
-st.dataframe(dataset.read())
+if dataset is not None:
+    st.dataframe(dataset.read())

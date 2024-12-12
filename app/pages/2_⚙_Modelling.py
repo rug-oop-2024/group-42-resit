@@ -36,8 +36,10 @@ names = [item.name for item in datasets]
 chosen_model = None
 current_metrics = None
 current_model = None
+chosen_target = None
+chosen_features = None
 
-current_dataset_name = st.selectbox("Select a dataset", names)
+current_dataset_name = st.selectbox("Select a dataset", names, None)
 
 if current_dataset_name:
     current_dataset = Dataset.from_artifact(
@@ -45,21 +47,28 @@ if current_dataset_name:
     list_of_features = detect_feature_types(current_dataset)
 
     chosen_features: list[Feature] = st.multiselect(
-        "choose features", list_of_features)
+        "choose input", list_of_features)
+    
+    
 
-    chosen_preffered_feature = st.selectbox(
-        "choose preffered feature", chosen_features, None)
+if chosen_features is not None:
+    list_of_chosen_features = [feature.name for feature in chosen_features]
+    chosen_target = st.selectbox(
+        "choose target feature", [feature for feature in list_of_features if feature.name not in list_of_chosen_features], None)
 
-if chosen_preffered_feature:
-    if chosen_preffered_feature.type == "categorical":
+# y.argmax(1) < might not be y
+
+if chosen_target and chosen_features:
+    if chosen_target.type == "categorical":
         chosen_model = st.selectbox(
             "Select a model", CLASSIFICATION_MODELS, None)
-    elif chosen_preffered_feature.type == "continuous":
+    elif chosen_target.type == "continuous":
         chosen_model = st.selectbox("Select a model", REGRESSION_MODELS, None)
     else:
-        st.write("I... don't know... how you got here?")
+        st.write("Seems you somehow broke the program, well played")
 
 if chosen_model is not None:
+    st.write(f"our current model: {len(chosen_model) - len("random_forest_regressor")}")
     current_model = get_model(chosen_model)
     chosen_split = st.slider("choose split", 0.1, 0.9, 0.8, step=0.01)
     if current_model.type == "classification":
@@ -76,11 +85,10 @@ if current_model is not None and st.button("run"):
                         current_dataset,
                         current_model,
                         list_of_features,
-                        chosen_preffered_feature,
+                        chosen_target,
                         chosen_split)
     st.write(pipeline)
     st.write(f"pipeline split: {pipeline._split}")
-
     # pipeline._preprocess_features()
     # pipeline._split_data()
     # pipeline._train()

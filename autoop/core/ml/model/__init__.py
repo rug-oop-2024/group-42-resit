@@ -37,9 +37,9 @@ def get_model(model_name: str) -> Model:
         match lowercase_model_name:
             case "multiple_linear_regression":
                 return MultipleLinearRegression()
-            case "k_nearest_neighbours":
+            case "random_forest_regressor":
                 return RandomForestRegressor()
-            case "random_forest_classifier":
+            case "lasso":
                 return Lasso()
             case _:
                 raise NotImplementedError(error_message_1 + error_message_2)
