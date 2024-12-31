@@ -6,7 +6,7 @@ from sklearn.datasets import fetch_openml
 from autoop.core.ml.dataset import Dataset
 from autoop.core.ml.feature import Feature
 from autoop.core.ml.metric import Accuracy, MeanSquaredError
-from autoop.core.ml.model.regression import MultipleLinearRegression
+from autoop.core.ml.model import Model, get_model
 from autoop.core.ml.pipeline import Pipeline
 from autoop.functional.feature import detect_feature_types
 
@@ -27,10 +27,10 @@ class TestPipeline(unittest.TestCase):
         self.features = detect_feature_types(self.dataset)
         self.pipeline = Pipeline(
             dataset=self.dataset,
-            model=MultipleLinearRegression(),
+            model=get_model("logistic_regression"),
             input_features=list(filter(lambda x: x._name != "age",
                                        self.features)),
-            target_feature=Feature(name="age", type="continuous"),
+            target_feature=Feature(name="native-country", type="categorical"),
             metrics=[MeanSquaredError(), Accuracy()],
             split=0.8
         )

@@ -69,7 +69,7 @@ options = glob("**/*.csv", recursive=True)
 
 dataset = None
 path = st.selectbox("Select a dataset", options, None)
-uploaded_file = st.file_uploader("Or upload a .csv file")
+uploaded_file = st.file_uploader("Or upload a .csv file", type=["csv"])
 
 if uploaded_file is not None and uploaded_file.type == "text/csv":
     df = pd.read_csv(io.StringIO(uploaded_file.getvalue().decode()))

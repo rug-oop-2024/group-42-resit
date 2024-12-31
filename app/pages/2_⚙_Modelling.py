@@ -68,7 +68,6 @@ if chosen_target and chosen_features:
         st.write("Seems you somehow broke the program, well played")
 
 if chosen_model is not None:
-    st.write(f"our current model: {len(chosen_model) - len("random_forest_regressor")}")
     current_model = get_model(chosen_model)
     chosen_split = st.slider("choose split", 0.1, 0.9, 0.8, step=0.01)
     if current_model.type == "classification":
@@ -88,8 +87,6 @@ if current_model is not None and st.button("run"):
                         chosen_target,
                         chosen_split)
     st.write(pipeline)
-    st.write(f"pipeline split: {pipeline._split}")
-    # pipeline._preprocess_features()
-    # pipeline._split_data()
-    # pipeline._train()
+    st.write(chosen_features)
+    st.write(chosen_target)
     st.write(pipeline.execute())
