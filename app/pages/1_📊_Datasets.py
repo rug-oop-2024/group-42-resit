@@ -16,7 +16,7 @@ class Management():
     Management class, handles management of artifacts.
     """
 
-    def create(self, full_asset_path: str) -> Dataset:
+    def create(self, full_asset_path: Path) -> Dataset:
         """
         creates a dataset and saves it given its asset path
         Args:
@@ -26,11 +26,11 @@ class Management():
         """
         data_path = Path(full_asset_path)
         df = pd.read_csv(data_path)
-
-        name_and_asset_path = full_asset_path.split("\\")[-1:][0]
+        asset_path = os.path.split(full_asset_path)[0] # something/
+        name =  os.path.split(full_asset_path)[1]
         dataset = Dataset.from_dataframe(
-            name=name_and_asset_path,
-            asset_path=name_and_asset_path,
+            name=name,
+            asset_path=asset_path,
             data=df,
         )
         self.save(dataset)
@@ -77,10 +77,14 @@ if uploaded_file is not None and uploaded_file.type == "text/csv":
         df, uploaded_file.name, uploaded_file.name)
     management.save(dataset)
 if st.button("delete file") and path is not None:
-    management.delete(management.create(path))
+    normpath = os.path.normpath(path)
+    management.delete(management.create(normpath))
 
 if path is not None:
-    dataset = management.create(path)
+    normpath = os.path.normpath(path)
+    dataset = management.create(normpath)
+    st.write(dataset.asset_path)
+    st.write(dataset.name)
 
 datasets = automl.registry.list(type="dataset")
 if dataset is not None:

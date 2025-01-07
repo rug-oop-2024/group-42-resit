@@ -19,14 +19,14 @@ class Artifact():
         optional add-ons: tags, metadata, version
         """
 
-        self._name = name
         self._type = type
-        self._asset_path = asset_path
+        self._asset_path = asset_path + "/"
+        self._name =  name
         self._data = data
         self._tags = tags
         self._metadata = metadata
         self._version = version
-        encoded = base64.b64encode(asset_path.encode("utf-8"))
+        encoded = base64.b64encode((asset_path+name).encode("utf-8"))
         encoded_string = encoded.decode("utf-8")
         self._id = f"{encoded_string}={version}"
 
@@ -98,12 +98,12 @@ class Artifact():
             None
         """
 
-        if not os.path.exists("./assets/objects/"):
-            os.makedirs("./assets/objects/", exist_ok=True)
+        if not os.path.exists(self.asset_path):
+            os.makedirs(self.asset_path, exist_ok=True)
 
         data = bytes.decode().split("\r")
 
-        with open("./assets/objects/" + self._asset_path, "w") as file:
+        with open(self.asset_path + self.name, "w") as file:
             file.writelines(data)
 
     def remove(self) -> None:
@@ -115,8 +115,8 @@ class Artifact():
             None
         """
 
-        if os.path.exists("./assets/objects/" + self.asset_path):
-            os.remove("./assets/objects/" + self.asset_path)
+        if os.path.exists(self.asset_path):
+            os.remove(self.asset_path + self.name)
 
     def read(self) -> str:
         """
@@ -127,12 +127,12 @@ class Artifact():
             str
         """
 
-        if not os.path.exists("./assets/objects/"):
-            raise FileNotFoundError("assets directory not found")
-        if not os.path.exists("./assets/objects/" + self._asset_path):
-            raise FileNotFoundError(f"{self._asset_path} file not found")
+        if not os.path.exists(self.asset_path):
+            raise FileNotFoundError(f"{self.asset_path} directory not found")
+        if not os.path.exists(self.asset_path + self.name):
+            raise FileNotFoundError(f"{self.asset_path + self.name} file not found")
         try:
-            with open("./assets/objects/" + self._asset_path, "r") as file:
+            with open(self.asset_path + self.name, "r") as file:
                 return file.read()
         except ValueError:
             error = "couldn't import from save, the file might be corrupted"
