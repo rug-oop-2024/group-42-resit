@@ -38,6 +38,7 @@ current_metrics = None
 current_model = None
 chosen_target = None
 chosen_features = None
+categorical_done = False
 
 current_dataset_name = st.selectbox("Select a dataset", names, None)
 
@@ -46,19 +47,28 @@ if current_dataset_name:
         datasets[names.index(current_dataset_name)])
     list_of_features = detect_feature_types(current_dataset)
 
-    chosen_features: list[Feature] = st.multiselect(
-        "choose input", list_of_features)
-    
-    
-
-if chosen_features is not None:
-    list_of_chosen_features = [feature.name for feature in chosen_features]
+if (current_dataset_name is not None and chosen_target is None):
     chosen_target = st.selectbox(
-        "choose target feature", [feature for feature in list_of_features if feature.name not in list_of_chosen_features], None)
+        "choose target feature", list_of_features, None)
+
+if not(chosen_target is None or chosen_target == []):
+    features_of_target_type = [
+        feature for feature in list_of_features if feature.type == chosen_target.type
+        and feature.name != chosen_target.name]
+    chosen_features: list[Feature] = st.multiselect(
+        "choose input",
+        features_of_target_type)
+
+if chosen_target.type == "categorical":
+    raw = current_dataset.read()
+    data = raw[chosen_target.name]
+    categorical_done = True
+    st.write(data)
+
 
 # y.argmax(1) < might not be y
 
-if chosen_target and chosen_features:
+if chosen_features:
     if chosen_target.type == "categorical":
         chosen_model = st.selectbox(
             "Select a model", CLASSIFICATION_MODELS, None)
@@ -87,6 +97,4 @@ if current_model is not None and st.button("run"):
                         chosen_target,
                         chosen_split)
     st.write(pipeline)
-    st.write(chosen_features)
-    st.write(chosen_target)
     st.write(pipeline.execute())
