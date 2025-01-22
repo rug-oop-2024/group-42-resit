@@ -9,6 +9,8 @@ from autoop.core.ml.model import (
     CLASSIFICATION_MODELS, REGRESSION_MODELS, get_model)
 from autoop.core.ml.pipeline import Pipeline
 from autoop.functional.feature import detect_feature_types
+import math
+from copy import deepcopy
 
 st.set_page_config(page_title="Modelling", page_icon="📈")
 
@@ -59,11 +61,16 @@ if not(chosen_target is None or chosen_target == []):
         "choose input",
         features_of_target_type)
 
-if chosen_target.type == "categorical":
-    raw = current_dataset.read()
-    data = raw[chosen_target.name]
+if chosen_target != None and chosen_target.type == "categorical":
+    raw = deepcopy(current_dataset.read())
+    data = deepcopy(raw[chosen_target.name])
+    types = []
+    for row in data:
+        if row not in types and type(row) is str:
+            types.append(row)
     categorical_done = True
-    st.write(data)
+    chosen_type = st.selectbox("select the chosen ... that you want", types, None)
+
 
 
 # y.argmax(1) < might not be y
@@ -90,11 +97,23 @@ if chosen_model is not None:
     current_metrics = [get_metric(metric) for metric in chosen_metrics]
 
 if current_model is not None and st.button("run"):
-    pipeline = Pipeline(current_metrics,
-                        current_dataset,
-                        current_model,
-                        list_of_features,
-                        chosen_target,
-                        chosen_split)
-    st.write(pipeline)
-    st.write(pipeline.execute())
+    if chosen_target.type == "categorical" and (chosen_type is None or chosen_type == ""):
+        st.write("Categorical error: Make sure to choose a type for the categorical data")
+    else:
+        chosen_dataset = current_dataset
+        if chosen_target.type == "categorical":
+            for index in range(len(data)):
+                if data[index] == chosen_type:
+                    data[index] = 1
+                else:
+                    data[index] = 0
+            raw[chosen_target.name] = data
+            chosen_dataset = Dataset.from_dataframe(name="temp.csv", asset_path='', data=raw)
+        pipeline = Pipeline(current_metrics,
+                            chosen_dataset,
+                            current_model,
+                            list_of_features,
+                            chosen_target,
+                            chosen_split)
+        st.write(pipeline)
+        st.write(pipeline.execute())

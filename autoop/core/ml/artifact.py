@@ -10,7 +10,7 @@ class Artifact():
     """
 
     def __init__(self,
-                 type: str, name: str, data: object,
+                 name: str, type: str, data: object,
                  asset_path: str, tags: list = [],
                  metadata: dict = {}, version: str = "1.0.0") -> None:
         """
@@ -20,7 +20,7 @@ class Artifact():
         """
 
         self._type = type
-        self._asset_path = asset_path + "/"
+        self._asset_path = asset_path.removeprefix("assets/objects") + "/"
         self._name =  name
         self._data = data
         self._tags = tags
@@ -97,13 +97,14 @@ class Artifact():
         Returns:
             None
         """
+        full_path = os.path.join("./assets/objects/", self.asset_path)
 
-        if not os.path.exists(self.asset_path):
-            os.makedirs(self.asset_path, exist_ok=True)
+        if not os.path.exists(full_path):
+            os.makedirs(full_path, exist_ok=True)
 
         data = bytes.decode().split("\r")
 
-        with open(self.asset_path + self.name, "w") as file:
+        with open(full_path + self.name, "w") as file:
             file.writelines(data)
 
     def remove(self) -> None:
@@ -115,8 +116,10 @@ class Artifact():
             None
         """
 
-        if os.path.exists(self.asset_path):
-            os.remove(self.asset_path + self.name)
+        full_path = os.path.join("./assets/objects/", self.asset_path)
+
+        if os.path.exists(full_path):
+            os.remove(full_path + self.name)
 
     def read(self) -> str:
         """
@@ -127,12 +130,14 @@ class Artifact():
             str
         """
 
-        if not os.path.exists(self.asset_path):
-            raise FileNotFoundError(f"{self.asset_path} directory not found")
-        if not os.path.exists(self.asset_path + self.name):
-            raise FileNotFoundError(f"{self.asset_path + self.name} file not found")
+        full_path = os.path.join("./assets/objects/", self.asset_path)
+
+        if not os.path.exists(full_path):
+            raise FileNotFoundError(f"{full_path} directory not found")
+        if not os.path.exists(full_path + self.name):
+            raise FileNotFoundError(f"{full_path + self.name} file not found")
         try:
-            with open(self.asset_path + self.name, "r") as file:
+            with open(full_path + self.name, "r") as file:
                 return file.read()
         except ValueError:
             error = "couldn't import from save, the file might be corrupted"

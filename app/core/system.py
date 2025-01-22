@@ -60,7 +60,7 @@ class ArtifactRegistry():
             artifact = Artifact(
                 name=data["name"],
                 version=data["version"],
-                normpath=data["asset_path"],
+                asset_path=data["asset_path"],
                 tags=data["tags"],
                 metadata=data["metadata"],
                 data=self._storage.load(data["asset_path"]),
