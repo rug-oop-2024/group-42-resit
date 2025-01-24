@@ -1,6 +1,8 @@
 import io
 
 import pandas as pd
+import os
+from pathlib import Path
 
 from autoop.core.ml.artifact import Artifact
 
@@ -33,13 +35,12 @@ class Dataset(Artifact):
             A Dataset converted from a the given data
         """
 
-        dataset_2 = Dataset(
+        return Dataset(
             name=name,
-            asset_path=asset_path,
+            asset_path=Path(os.path.join(asset_path, "datasets")),
             data=data.to_csv(index=False).encode(),
             version=version,
         )
-        return dataset_2
 
     @staticmethod
     def from_artifact(artifact: Artifact) -> "Dataset":

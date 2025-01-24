@@ -2,6 +2,7 @@ import pickle
 from typing import List
 
 import numpy as np
+from pathlib import Path
 
 from autoop.core.ml.artifact import Artifact
 from autoop.core.ml.dataset import Dataset
@@ -122,6 +123,27 @@ Pipeline(
             None
         """
         self._artifacts[name] = artifact
+
+    def save_as_artifact(self, name: str, version: str) -> None:
+        
+        saved_pipeline = Artifact(name=name, type="pipeline",
+                 data=self._dataset.data, asset_path=Path("assets/objects/pipelines"),
+                 metadata={
+                     "metrics": self._metrics,
+                     "model": self.model,
+                     "input_features": self._input_features,
+                     "target_feature": self._target_feature,
+                     "split": self._split,
+                     "artifacts": self._artifacts,
+                     },
+                 version=version)
+        saved_pipeline.save(saved_pipeline.data)
+        
+
+    @staticmethod
+    def load_from_artifact(name: str, version: str) -> Artifact:
+        pass
+        
 
     def _preprocess_features(self) -> None:
         """

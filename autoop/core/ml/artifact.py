@@ -1,7 +1,7 @@
 import base64
 import os
 from copy import deepcopy
-
+from pathlib import Path
 
 class Artifact():
     """
@@ -10,8 +10,8 @@ class Artifact():
     """
 
     def __init__(self,
-                 name: str, type: str, data: object,
-                 asset_path: str, tags: list = [],
+                 name: str, data: object, type: str = "",
+                 asset_path: Path = "", tags: list = [],
                  metadata: dict = {}, version: str = "1.0.0") -> None:
         """
         initialises init and creates an id based on the asset path
@@ -20,17 +20,19 @@ class Artifact():
         """
 
         self._type = type
-        self._asset_path = asset_path.removeprefix("assets/objects") + "/"
-        self._name =  name
+        if not asset_path == "":
+            self._asset_path = os.path.relpath(asset_path, "assets/objects") + f"/{name}"
+        else:
+            self._asset_path = f"/{name}"
+
+        self._name = name
         self._data = data
         self._tags = tags
         self._metadata = metadata
         self._version = version
-        encoded = base64.b64encode((asset_path+name).encode("utf-8"))
+        encoded = base64.b64encode((str(self.asset_path)+name).encode("utf-8"))
         encoded_string = encoded.decode("utf-8")
         self._id = f"{encoded_string}={version}"
-
-        self.save(self._data)
 
     @property
     def name(self) -> str:
@@ -99,12 +101,12 @@ class Artifact():
         """
         full_path = os.path.join("./assets/objects/", self.asset_path)
 
-        if not os.path.exists(full_path):
-            os.makedirs(full_path, exist_ok=True)
+        if not os.path.exists(os.path.split(full_path)[0]):
+            os.makedirs(os.path.split(full_path)[0], exist_ok=True)
 
         data = bytes.decode().split("\r")
 
-        with open(full_path + self.name, "w") as file:
+        with open(full_path, "w+") as file:
             file.writelines(data)
 
     def remove(self) -> None:
@@ -132,12 +134,12 @@ class Artifact():
 
         full_path = os.path.join("./assets/objects/", self.asset_path)
 
+        if not os.path.exists(os.path.split(full_path)[0]):
+            raise FileNotFoundError(f"{os.path.split(full_path)[0]} directory not found")
         if not os.path.exists(full_path):
-            raise FileNotFoundError(f"{full_path} directory not found")
-        if not os.path.exists(full_path + self.name):
-            raise FileNotFoundError(f"{full_path + self.name} file not found")
+            raise FileNotFoundError(f"{full_path} file not found")
         try:
-            with open(full_path + self.name, "r") as file:
+            with open(full_path, "r") as file:
                 return file.read()
         except ValueError:
             error = "couldn't import from save, the file might be corrupted"

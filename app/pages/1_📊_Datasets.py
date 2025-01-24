@@ -24,15 +24,16 @@ class Management():
         Return:
             A saved dataset
         """
-        data_path = Path(full_asset_path)
-        df = pd.read_csv(data_path)
-        asset_path = os.path.split(full_asset_path)[0] # something/
-        name =  os.path.split(full_asset_path)[1]
+
+        df = pd.read_csv(full_asset_path)
+        asset_path, name = os.path.split(full_asset_path)
+
         dataset = Dataset.from_dataframe(
             name=name,
-            asset_path=asset_path,
+            asset_path=Path(asset_path).parent,
             data=df,
         )
+
         self.save(dataset)
         return dataset
 
@@ -74,8 +75,10 @@ uploaded_file = st.file_uploader("Or upload a .csv file", type=["csv"])
 if uploaded_file is not None and uploaded_file.type == "text/csv":
     df = pd.read_csv(io.StringIO(uploaded_file.getvalue().decode()))
     dataset = Dataset.from_dataframe(
-        df, uploaded_file.name, uploaded_file.name)
+        df, uploaded_file.name, "assets/objects/")
     management.save(dataset)
+    dataset.save(dataset._data)
+
 if st.button("delete file") and path is not None:
     normpath = os.path.normpath(path)
     management.delete(management.create(normpath))
@@ -83,9 +86,6 @@ if st.button("delete file") and path is not None:
 if path is not None:
     normpath = os.path.normpath(path)
     dataset = management.create(normpath)
-    st.write(dataset.asset_path)
-    st.write(dataset.name)
 
-datasets = automl.registry.list(type="dataset")
 if dataset is not None:
     st.dataframe(dataset.read())

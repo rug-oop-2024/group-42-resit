@@ -9,7 +9,6 @@ from autoop.core.ml.model import (
     CLASSIFICATION_MODELS, REGRESSION_MODELS, get_model)
 from autoop.core.ml.pipeline import Pipeline
 from autoop.functional.feature import detect_feature_types
-import math
 from copy import deepcopy
 
 st.set_page_config(page_title="Modelling", page_icon="📈")
@@ -40,7 +39,7 @@ current_metrics = None
 current_model = None
 chosen_target = None
 chosen_features = None
-categorical_done = False
+pipeline = None
 
 current_dataset_name = st.selectbox("Select a dataset", names, None)
 
@@ -96,7 +95,7 @@ if chosen_model is not None:
 
     current_metrics = [get_metric(metric) for metric in chosen_metrics]
 
-if current_model is not None and st.button("run"):
+if current_model is not None:
     if chosen_target.type == "categorical" and (chosen_type is None or chosen_type == ""):
         st.write("Categorical error: Make sure to choose a type for the categorical data")
     else:
@@ -108,7 +107,8 @@ if current_model is not None and st.button("run"):
                 else:
                     data[index] = 0
             raw[chosen_target.name] = data
-            chosen_dataset = Dataset.from_dataframe(name="temp.csv", asset_path='', data=raw)
+            chosen_dataset = Dataset.from_dataframe(name="temp.csv", asset_path="assets/objects", data=raw)
+            # st.write(chosen_dataset.read())
         pipeline = Pipeline(current_metrics,
                             chosen_dataset,
                             current_model,
@@ -117,3 +117,10 @@ if current_model is not None and st.button("run"):
                             chosen_split)
         st.write(pipeline)
         st.write(pipeline.execute())
+
+if pipeline:
+    name = st.text_input("give name")
+    version = st.text_input("give version")
+    if st.button("save pipeline"):
+       pipeline.save_as_artifact(name, version)
+       st.write("saved succesfully")
