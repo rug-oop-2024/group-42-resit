@@ -136,19 +136,17 @@ Pipeline(
         """
 
         saved_pipeline = Artifact(
-                name=name, type="pipeline",
-                data=self._dataset.data,
-                asset_path=Path(f"pipelines/{name}"),
-                metadata={
-                    "metrics": [metric.name for metric in self._metrics],
-                    "model": self.model.name,
-                    "input_features": (
-                        [feature.name for feature in self._input_features]),
-                    "target_feature": self._target_feature.name,
-                    "split": self._split
-                    },
-                version=version
-                )
+            name=name, type="pipeline",
+            data=self._dataset.data,
+            asset_path=Path(f"pipelines/{name}"),
+            metadata={
+                "metrics": [metric.name for metric in self._metrics],
+                "model": self.model.name,
+                "input_features": (
+                    [feature.name for feature in self._input_features]),
+                "target_feature": self._target_feature.name,
+                "split": self._split},
+            version=version)
         saved_pipeline.save(saved_pipeline.data)
 
         return saved_pipeline

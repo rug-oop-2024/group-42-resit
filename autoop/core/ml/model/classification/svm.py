@@ -44,7 +44,8 @@ class Support_Vector_Machine(ClassificationModel):
         super().fit(observations, ground_truth)
         self._instance_of_svc.fit(
             observations, ground_truth)
-        self._parameters = self._parameters | self._instance_of_svc.get_params()
+        self._parameters = (
+            self._parameters | self._instance_of_svc.get_params())
 
     def predict(self, observations: np.ndarray) -> np.ndarray:
         """
