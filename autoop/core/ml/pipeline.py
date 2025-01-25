@@ -126,6 +126,14 @@ Pipeline(
         self._artifacts[name] = artifact
 
     def save_as_artifact(self, name: str, version: str) -> None:
+        """
+        Saves the pipline as an artifact.
+        Args:
+            name[str]: The name of the pipline.
+            version[str]: The version of the pipline.
+        Returns:
+            None
+        """
 
         saved_pipeline = Artifact(
                 name=name, type="pipeline",
@@ -140,13 +148,22 @@ Pipeline(
                     "split": self._split
                     },
                 version=version
-            )
+                )
         saved_pipeline.save(saved_pipeline.data)
 
         return saved_pipeline
 
     @staticmethod
-    def load_from_artifact(name: str, version: str) -> Artifact:
+    def load_from_artifact(name: str, version: str) -> "Pipeline":
+        """
+        Currently not implemented
+        Loads the pipline from artifact.
+        Args:
+            name[str]: The name of the pipline.
+            version[str]: The version of the pipline.
+        Returns:
+            Pipline[pipline]: The pipline loaded from artifact.
+        """
         pass
 
     def _preprocess_features(self) -> None:

@@ -44,10 +44,11 @@ class LogisticRegressionModel(ClassificationModel):
         super().fit(observations, ground_truth)
 
         if ground_truth.ndim > 1:
-            self._instance_of_logistic_regression.fit(observations,
-                                                      ground_truth.argmax(1))
+            self._instance_of_logistic_regression.fit(
+                observations, ground_truth.argmax(1))
         else:
-            self._instance_of_logistic_regression.fit(observations, ground_truth)
+            self._instance_of_logistic_regression.fit(
+                observations, ground_truth)
         self._parameters.update(
             {
                 "_coef": self._instance_of_logistic_regression.coef_,

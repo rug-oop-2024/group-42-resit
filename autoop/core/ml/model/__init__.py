@@ -49,8 +49,9 @@ def get_model(model_name: str) -> Model:
             case "multiple_linear_regression":
                 return MultipleLinearRegression()
             case "random_forest_regressor":
-                print("RandomForestRegressor is unavailable due to a"
-                      + " conflict between BaseModel and RandomForestRegressor")
+                error_1 = "RandomForestRegressor is unavailable"
+                error_2 = " due to a conflict with BaseModel"
+                print(error_1 + error_2)
                 # return RandomForestRegressor()
             case "lasso":
                 return Lasso()
@@ -65,8 +66,9 @@ def get_model(model_name: str) -> Model:
             case "logistic_regression":
                 return LogisticRegressionModel()
             case "random_forest_classifier":
-                print("RandomForestClassifier is unavailable due to  a"
-                      + " conflict between BaseModel and RandomForestClassifier")
+                error_1 = "RandomForestClassifier is unavailable"
+                error_2 = " due to a conflict with BaseModel"
+                print(error_1 + error_2)
                 # return RandomForestClassifier()
             case "support_vector_machine":
                 return Support_Vector_Machine()

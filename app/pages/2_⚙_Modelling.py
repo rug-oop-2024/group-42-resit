@@ -3,8 +3,10 @@ import streamlit as st
 from app.core.system import AutoMLSystem
 from autoop.core.ml.dataset import Dataset
 from autoop.core.ml.feature import Feature
-from autoop.core.ml.metric import CATEGORICAL_METRICS, CONTINUOUS_METRICS, get_metric
-from autoop.core.ml.model import CLASSIFICATION_MODELS, REGRESSION_MODELS, get_model
+from autoop.core.ml.metric import (
+    CATEGORICAL_METRICS, CONTINUOUS_METRICS, get_metric)
+from autoop.core.ml.model import (
+    CLASSIFICATION_MODELS, REGRESSION_MODELS, get_model)
 from autoop.core.ml.pipeline import Pipeline
 from autoop.functional.feature import detect_feature_types
 
@@ -51,9 +53,12 @@ if current_dataset_name is not None and chosen_target is None:
         "choose target feature", list_of_features, None)
 
 if not (chosen_target is None or chosen_target == []):
-    features_of_target_type = [
-        feature for feature in list_of_features if feature.type == chosen_target.type
-        and feature.name != chosen_target.name]
+    features_of_target_type = []
+    for feature in list_of_features:
+        check_1 = (feature.type == chosen_target.type)
+        check_2 = (feature.name != chosen_target.name)
+        if check_1 and check_2:
+            features_of_target_type.append(feature)
     chosen_features: list[Feature] = st.multiselect(
         "choose input",
         features_of_target_type)
@@ -66,8 +71,9 @@ if chosen_features:
         chosen_model = st.selectbox("Select a model", REGRESSION_MODELS, None)
     else:
         st.write("Seems you somehow broke the program, well played")
-    st.write("RandomForestRegressor and RandomForestClassifier are unavailable"
-             + " due to a conflict with BaseModel")
+    error_1 = "RandomForestRegressor and RandomForestClassifier"
+    error_2 = " are unavailable due to a conflict with BaseModel"
+    st.write(error_1 + error_2)
 
 if chosen_model is not None:
     current_model = get_model(chosen_model)

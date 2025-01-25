@@ -44,7 +44,8 @@ class Support_Vector_Regression(RegressionModel):
         super().fit(observations, ground_truth)
         self._instance_of_svr.fit(
             observations, ground_truth)
-        self._parameters = self._parameters | self._instance_of_svr.get_params()
+        self._parameters = (
+            self._parameters | self._instance_of_svr.get_params())
 
     def predict(self, observations: np.ndarray) -> np.ndarray:
         """
