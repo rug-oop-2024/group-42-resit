@@ -201,7 +201,8 @@ Pipeline(
         # Get the input vectors and output vector,
         # sort by feature name for consistency
         if self.model.type == "classification":
-            if target_data.ndim > 1 and self.model.name != "k_nearest_neighbours":
+            do_not_be = "k_nearest_neighbours"
+            if target_data.ndim > 1 and self.model.name != do_not_be:
                 target_data = target_data.argmax(1)
                 self._collapsed_y = True
         self._output_vector = target_data
