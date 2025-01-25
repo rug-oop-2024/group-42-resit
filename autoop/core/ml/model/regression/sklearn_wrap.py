@@ -15,7 +15,7 @@ class Lasso(RegressionModel):
     A class that acts as a wrapper for the
     Lasso function from scikit-learn.linear_model.Lasso
     """
-
+    _name: str = PrivateAttr(default="Lasso")
     _instance_of_lasso: linear.Lasso = PrivateAttr(default=linear.Lasso())
 
     @property
@@ -28,6 +28,7 @@ class Lasso(RegressionModel):
             deepcopy of an instance of lasso
         """
         return deepcopy(self._instance_of_lasso)
+    
 
     def fit(self, observations: np.ndarray, ground_truth: np.ndarray) -> None:
         """

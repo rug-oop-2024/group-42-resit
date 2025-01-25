@@ -20,6 +20,7 @@ from autoop.core.ml.model.model import RegressionModel
 class MultipleLinearRegression(RegressionModel):
     """A model for multiple linear regression."""
     _slope: np.ndarray = PrivateAttr(default=np.ndarray)
+    _name: str = PrivateAttr(default="MultipleLinearRegression")
 
     @property
     def get_slope(self) -> np.ndarray:
@@ -31,6 +32,18 @@ class MultipleLinearRegression(RegressionModel):
             The slope np.ndarray.
         """
         return deepcopy(self._slope)
+    
+    @property
+    def name(self) -> str:
+        """
+        Getter for the type of this class.
+        Args:
+            None
+        Returns:
+            type[str] (continuous, categorical or undefined)
+        """
+        return self._name
+        
 
     def fit(self, observations: np.ndarray, ground_truth: np.ndarray) -> None:
         """

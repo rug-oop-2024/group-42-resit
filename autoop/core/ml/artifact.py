@@ -10,7 +10,7 @@ class Artifact():
     """
 
     def __init__(self,
-                 name: str, data: object, type: str = "",
+                 name: str, data: bytes, type: str = "",
                  asset_path: Path = "", tags: list = [],
                  metadata: dict = {}, version: str = "1.0.0") -> None:
         """
@@ -20,11 +20,7 @@ class Artifact():
         """
 
         self._type = type
-        if not asset_path == "":
-            self._asset_path = os.path.relpath(asset_path, "assets/objects") + f"/{name}"
-        else:
-            self._asset_path = f"/{name}"
-
+        self._asset_path = str(os.path.normpath(asset_path))
         self._name = name
         self._data = data
         self._tags = tags
@@ -56,7 +52,7 @@ class Artifact():
         return self._asset_path
 
     @property
-    def data(self) -> object:
+    def data(self) -> bytes:
         """
         returns a deepcopy of the data of the Artifact
         """

@@ -47,6 +47,7 @@ class Pipeline():
         self._split = split
         self._training_metrics_results = []
         self._evaluation_metrics_results = []
+        self._collapsed_y = False
         if target_feature.type == "categorical" and (
                 model.type != "classification"):
             target_string = " classification for categorical target feature"
@@ -127,18 +128,18 @@ Pipeline(
     def save_as_artifact(self, name: str, version: str) -> None:
         
         saved_pipeline = Artifact(name=name, type="pipeline",
-                 data=self._dataset.data, asset_path=Path("assets/objects/pipelines"),
+                 data=self._dataset.data, asset_path=Path(f"pipelines/{name}"),
                  metadata={
-                     "metrics": self._metrics,
-                     "model": self.model,
-                     "input_features": self._input_features,
-                     "target_feature": self._target_feature,
-                     "split": self._split,
-                     "artifacts": self._artifacts,
+                     "metrics": [metric.name for metric in self._metrics],
+                     "model": self.model.name,
+                     "input_features": [feature.name for feature in self._input_features],
+                     "target_feature": self._target_feature.name,
+                     "split": self._split
                      },
                  version=version)
         saved_pipeline.save(saved_pipeline.data)
         
+        return saved_pipeline
 
     @staticmethod
     def load_from_artifact(name: str, version: str) -> Artifact:
@@ -162,6 +163,9 @@ Pipeline(
             self._register_artifact(feature_name, artifact)
         # Get the input vectors and output vector,
         # sort by feature name for consistency
+        if target_data.ndim > 1 and self.model.name != "k_nearest_neighbours":
+            target_data = target_data.argmax(1)
+            self._collapsed_y = True
         self._output_vector = target_data
         self._input_vectors = [
             data for (feature_name, data, artifact) in input_results]
@@ -228,6 +232,11 @@ Pipeline(
         for metric in self._metrics:
             result = metric.evaluate(predictions, Y)
             self._evaluation_metrics_results.append((metric, result))
+        if self._collapsed_y:
+            pass
+            # original_data = self._dataset.read()[self._target_feature.name]
+            # predictions = original_data[predictions]
+            # print("LOOK HERE!!!!!!!!!!!!!!!!!!")
         self._predictions = predictions
 
     def execute(self) -> None:

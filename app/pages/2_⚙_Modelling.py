@@ -10,6 +10,7 @@ from autoop.core.ml.model import (
 from autoop.core.ml.pipeline import Pipeline
 from autoop.functional.feature import detect_feature_types
 from copy import deepcopy
+import os
 
 st.set_page_config(page_title="Modelling", page_icon="📈")
 
@@ -33,6 +34,7 @@ write_helper_text(helper_text_1 + " to train a model on a dataset.")
 automl = AutoMLSystem.get_instance()
 
 datasets = automl.registry.list(type="dataset")
+
 names = [item.name for item in datasets]
 chosen_model = None
 current_metrics = None
@@ -48,11 +50,11 @@ if current_dataset_name:
         datasets[names.index(current_dataset_name)])
     list_of_features = detect_feature_types(current_dataset)
 
-if (current_dataset_name is not None and chosen_target is None):
+if current_dataset_name is not None and chosen_target is None:
     chosen_target = st.selectbox(
         "choose target feature", list_of_features, None)
 
-if not(chosen_target is None or chosen_target == []):
+if not (chosen_target is None or chosen_target == []):
     features_of_target_type = [
         feature for feature in list_of_features if feature.type == chosen_target.type
         and feature.name != chosen_target.name]
@@ -60,19 +62,15 @@ if not(chosen_target is None or chosen_target == []):
         "choose input",
         features_of_target_type)
 
-if chosen_target != None and chosen_target.type == "categorical":
-    raw = deepcopy(current_dataset.read())
-    data = deepcopy(raw[chosen_target.name])
-    types = []
-    for row in data:
-        if row not in types and type(row) is str:
-            types.append(row)
-    categorical_done = True
-    chosen_type = st.selectbox("select the chosen ... that you want", types, None)
-
-
-
-# y.argmax(1) < might not be y
+# if chosen_target != None and chosen_target.type == "categorical":
+#     raw = deepcopy(current_dataset.read())
+#     data = deepcopy(raw[chosen_target.name])
+#     types = []
+#     for row in data:
+#         if row not in types and type(row) is str:
+#             types.append(row)
+#     categorical_done = True
+#     chosen_type = st.selectbox("select the chosen ... that you want", types, None)
 
 if chosen_features:
     if chosen_target.type == "categorical":
@@ -96,23 +94,23 @@ if chosen_model is not None:
     current_metrics = [get_metric(metric) for metric in chosen_metrics]
 
 if current_model is not None:
-    if chosen_target.type == "categorical" and (chosen_type is None or chosen_type == ""):
-        st.write("Categorical error: Make sure to choose a type for the categorical data")
-    else:
-        chosen_dataset = current_dataset
-        if chosen_target.type == "categorical":
-            for index in range(len(data)):
-                if data[index] == chosen_type:
-                    data[index] = 1
-                else:
-                    data[index] = 0
-            raw[chosen_target.name] = data
-            chosen_dataset = Dataset.from_dataframe(name="temp.csv", asset_path="assets/objects", data=raw)
-            # st.write(chosen_dataset.read())
+    # if chosen_target.type == "categorical" and (chosen_type is None or chosen_type == ""):
+    #     st.write("Categorical error: Make sure to choose a type for the categorical data")
+    # else:
+    #     chosen_dataset = current_dataset
+    #     if chosen_target.type == "categorical":
+    #         for index in range(len(data)):
+    #             if data[index] == chosen_type:
+    #                 data[index] = 1
+    #             else:
+    #                 data[index] = 0
+    #         raw[chosen_target.name] = data
+    #         st.write(raw)
+    #         chosen_dataset._data = raw.to_csv(index=False).encode()
         pipeline = Pipeline(current_metrics,
-                            chosen_dataset,
+                            current_dataset,
                             current_model,
-                            list_of_features,
+                            chosen_features,
                             chosen_target,
                             chosen_split)
         st.write(pipeline)
@@ -122,5 +120,6 @@ if pipeline:
     name = st.text_input("give name")
     version = st.text_input("give version")
     if st.button("save pipeline"):
-       pipeline.save_as_artifact(name, version)
+       saved_pipeline = pipeline.save_as_artifact(name, version)
+       automl.registry.register(saved_pipeline)
        st.write("saved succesfully")

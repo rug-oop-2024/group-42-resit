@@ -12,7 +12,7 @@ class RandomForestRegressor(RegressionModel):
     A class that acts as a wrapper for the
     Random forest regressor from scikit-learn.linear_model.ensebmle
     """
-
+    _name: str = PrivateAttr(default="RandomForestRegressor")
     _instance_of_random_forest_regressor: ensemble.RandomForestRegressor = (
         PrivateAttr(default=ensemble.RandomForestRegressor)
     )

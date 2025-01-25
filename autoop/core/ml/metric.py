@@ -69,6 +69,39 @@ class Metric(ABC, BaseModel):
     _type: str = PrivateAttr(default="Undefined")
 
     @property
+    def name(self) -> str:
+        """
+        Getter for the type of this class.
+        Args:
+            None
+        Returns:
+            type[str] (continuous, categorical or undefined)
+        """
+        return self._name
+    
+    @property
+    def result(self) -> str:
+        """
+        Getter for the type of this class.
+        Args:
+            None
+        Returns:
+            type[str] (continuous, categorical or undefined)
+        """
+        return self._result
+    
+    @property
+    def data(self) -> str:
+        """
+        Getter for the type of this class.
+        Args:
+            None
+        Returns:
+            type[str] (continuous, categorical or undefined)
+        """
+        return self._data
+
+    @property
     def type(self) -> str:
         """
         Getter for the type of this class.
@@ -77,8 +110,8 @@ class Metric(ABC, BaseModel):
         Returns:
             type[str] (continuous, categorical or undefined)
         """
-        return deepcopy(self._type)
-
+        return self._type
+    
     def __str__(self) -> str:
         """
         Summary of the results of the metric

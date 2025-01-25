@@ -11,6 +11,8 @@ class Model(ABC, BaseModel):
     Base class for all metrics.
     """
 
+    _name: str = PrivateAttr(default="Model")
+
     _type: str = PrivateAttr(default="Undefined")
 
     _parameters: dict = PrivateAttr(default=dict())
@@ -25,6 +27,17 @@ class Model(ABC, BaseModel):
             parameters[Dict{np.ndarray}
         """
         return deepcopy(self._parameters)
+
+    @property
+    def name(self) -> dict:
+        """
+        Getter for the parameters
+        Args:
+            None
+        Returns:
+            parameters[Dict{np.ndarray}
+        """
+        return self._name
 
     @property
     def observations(self) -> np.ndarray:

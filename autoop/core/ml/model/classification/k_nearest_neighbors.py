@@ -10,7 +10,7 @@ Adapted from exercise 1 of the oop-course
 from collections import Counter
 
 import numpy as np
-from pydantic import Field
+from pydantic import Field, PrivateAttr
 
 from autoop.core.ml.model.model import ClassificationModel
 
@@ -21,6 +21,8 @@ class KNearestNeighbors(ClassificationModel):
     """K-Nearest Neighbors Algorithm"""
 
     k: int = Field(title="Number of neighbors", default=AMOUNT_OF_NEIGHBOURS)
+
+    _name: str = PrivateAttr("k_nearest_neighbours")
 
     def _amount_of_neighbours_greater_than_zero(self) -> None:
         """

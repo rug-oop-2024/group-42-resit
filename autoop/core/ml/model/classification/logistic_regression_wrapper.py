@@ -13,6 +13,9 @@ class LogisticRegressionModel(ClassificationModel):
     Logisticregression function from scikit-learn.linear_model
     """
 
+    
+    _name: str = PrivateAttr("logistic_regression")
+
     _instance_of_logistic_regression: sk.LogisticRegression = (
         PrivateAttr(default=sk.LogisticRegression())
     )
@@ -40,7 +43,13 @@ class LogisticRegressionModel(ClassificationModel):
             None
         """
         super().fit(observations, ground_truth)
-        self._instance_of_logistic_regression.fit(observations, ground_truth)
+
+
+        if ground_truth.ndim > 1:
+            self._instance_of_logistic_regression.fit(observations, ground_truth.argmax(1))
+        else:
+            y = ground_truth
+            self._instance_of_logistic_regression.fit(observations, ground_truth)
         self._parameters.update(
             {
                 "_coef": self._instance_of_logistic_regression.coef_,

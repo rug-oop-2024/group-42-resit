@@ -37,7 +37,7 @@ class Dataset(Artifact):
 
         return Dataset(
             name=name,
-            asset_path=Path(os.path.join(asset_path, "datasets")),
+            asset_path=asset_path,
             data=data.to_csv(index=False).encode(),
             version=version,
         )
@@ -53,7 +53,7 @@ class Dataset(Artifact):
         """
         return Dataset(
             name=artifact.name,
-            asset_path=artifact.asset_path,
+            asset_path=artifact.asset_path, 
             data=artifact.data,
             tags=artifact.tags,
             metadata=artifact.metadata,

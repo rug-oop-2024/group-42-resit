@@ -25,12 +25,15 @@ class Management():
             A saved dataset
         """
 
+        name = os.path.split(full_asset_path)[1]
+
         df = pd.read_csv(full_asset_path)
-        asset_path, name = os.path.split(full_asset_path)
+
+        # st.write()
 
         dataset = Dataset.from_dataframe(
-            name=name,
-            asset_path=Path(asset_path).parent,
+            name=os.path.basename(name),
+            asset_path=os.path.relpath(full_asset_path, "assets/objects"),
             data=df,
         )
 
@@ -45,9 +48,9 @@ class Management():
         Returns:
             None
         """
-        st.write("file deleted")
         automl.registry.delete(artifact.id)
         os.remove("./assets/dbo/artifacts/" + artifact.id)
+        st.write("file deleted")
         st.rerun()
 
     def save(self, artifact: Artifact) -> None:
@@ -75,9 +78,9 @@ uploaded_file = st.file_uploader("Or upload a .csv file", type=["csv"])
 if uploaded_file is not None and uploaded_file.type == "text/csv":
     df = pd.read_csv(io.StringIO(uploaded_file.getvalue().decode()))
     dataset = Dataset.from_dataframe(
-        df, uploaded_file.name, "assets/objects/")
-    management.save(dataset)
+        df, uploaded_file.name, f"datasets/{uploaded_file.name}")
     dataset.save(dataset._data)
+    management.save(dataset)
 
 if st.button("delete file") and path is not None:
     normpath = os.path.normpath(path)

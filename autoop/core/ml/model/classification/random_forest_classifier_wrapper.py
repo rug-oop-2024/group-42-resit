@@ -13,6 +13,8 @@ class RandomForestClassifier(ClassificationModel):
     ensemble from scikit-learn.ensemble
     """
 
+    _name: str = PrivateAttr("random_forest_classifier")
+
     _instance_of_random_forest_classifier: ensemble.RandomForestClassifier = (
         PrivateAttr(default=ensemble.RandomForestClassifier)
     )
