@@ -1,14 +1,17 @@
+import io
 import pickle
 from pathlib import Path
 from typing import List
 
 import numpy as np
+import pandas as pd
 
 from autoop.core.ml.artifact import Artifact
 from autoop.core.ml.dataset import Dataset
 from autoop.core.ml.feature import Feature
-from autoop.core.ml.metric import Metric
-from autoop.core.ml.model import Model
+from autoop.core.ml.metric import Metric, get_metric
+from autoop.core.ml.model import Model, get_model
+from autoop.functional.feature import detect_feature_types_from_dataframe
 from autoop.functional.preprocessing import preprocess_features
 
 
@@ -152,17 +155,33 @@ Pipeline(
         return saved_pipeline
 
     @staticmethod
-    def load_from_artifact(name: str, version: str) -> "Pipeline":
+    def load_from_artifact(artifact: Artifact) -> "Pipeline":
         """
-        Currently not implemented
         Loads the pipline from artifact.
         Args:
-            name[str]: The name of the pipline.
-            version[str]: The version of the pipline.
+            artifact[Artifact]: The artifact
+            that should be loaded into a pipline.
         Returns:
-            Pipline[pipline]: The pipline loaded from artifact.
+            Pipline[Pipline]: The pipline loaded from artifact.
         """
-        pass
+
+        saved_data = artifact.metadata
+        list_of_features = detect_feature_types_from_dataframe(
+            pd.read_csv(io.StringIO(artifact.data.decode()))
+        )
+        input_features = [feature for feature in list_of_features
+                          if feature.name in saved_data["input_features"]]
+        target_feature = [feature for feature in list_of_features
+                          if feature.name == saved_data["target_feature"]][0]
+
+        return Pipeline(
+            [get_metric(metric)
+                for metric in saved_data["metrics"]],
+            artifact.data,
+            get_model(saved_data["model"]),
+            input_features,
+            target_feature,
+            saved_data["split"])
 
     def _preprocess_features(self) -> None:
         """
