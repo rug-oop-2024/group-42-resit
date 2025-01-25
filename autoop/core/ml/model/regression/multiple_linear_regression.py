@@ -32,7 +32,6 @@ class MultipleLinearRegression(RegressionModel):
             The slope np.ndarray.
         """
         return deepcopy(self._slope)
-        
 
     def fit(self, observations: np.ndarray, ground_truth: np.ndarray) -> None:
         """

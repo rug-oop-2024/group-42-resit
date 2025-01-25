@@ -1,8 +1,8 @@
-from sklearn.svm import SVR
 from copy import deepcopy
 
 import numpy as np
 from pydantic import PrivateAttr
+from sklearn.svm import SVR
 
 from autoop.core.ml.model.model import RegressionModel
 

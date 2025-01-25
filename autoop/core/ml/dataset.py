@@ -1,8 +1,6 @@
 import io
 
 import pandas as pd
-import os
-from pathlib import Path
 
 from autoop.core.ml.artifact import Artifact
 
@@ -53,7 +51,7 @@ class Dataset(Artifact):
         """
         return Dataset(
             name=artifact.name,
-            asset_path=artifact.asset_path, 
+            asset_path=artifact.asset_path,
             data=artifact.data,
             tags=artifact.tags,
             metadata=artifact.metadata,

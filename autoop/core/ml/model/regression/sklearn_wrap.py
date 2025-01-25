@@ -28,7 +28,6 @@ class Lasso(RegressionModel):
             deepcopy of an instance of lasso
         """
         return deepcopy(self._instance_of_lasso)
-    
 
     def fit(self, observations: np.ndarray, ground_truth: np.ndarray) -> None:
         """

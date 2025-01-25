@@ -5,15 +5,19 @@ from .classification import (
     KNearestNeighbors,
     LogisticRegressionModel,
     RandomForestClassifier,
-    Support_Vector_Machine
+    Support_Vector_Machine,
 )
 from .model import Model
-from .regression import ( 
-    Lasso, 
+from .regression import (
+    Lasso,
     MultipleLinearRegression,
     RandomForestRegressor,
-    Support_Vector_Regression
+    Support_Vector_Regression,
 )
+
+non_working_classes = [
+    RandomForestClassifier, RandomForestRegressor]
+
 REGRESSION_MODELS = [
     "multiple_linear_regression",
     # "random_forest_regressor",
@@ -24,7 +28,7 @@ REGRESSION_MODELS = [
 CLASSIFICATION_MODELS = [
     "logistic_regression",
     # "random_forest_classifier",
-    "k_nearest_neighbours" ,
+    "k_nearest_neighbours",
     "support_vector_machine"
 ]
 
@@ -45,8 +49,8 @@ def get_model(model_name: str) -> Model:
             case "multiple_linear_regression":
                 return MultipleLinearRegression()
             case "random_forest_regressor":
-                print("RandomForestRegressor is unavailable"
-                      +" due to a conflict between BaseModel and RandomForestRegressor")
+                print("RandomForestRegressor is unavailable due to a"
+                      + " conflict between BaseModel and RandomForestRegressor")
                 # return RandomForestRegressor()
             case "lasso":
                 return Lasso()
@@ -61,11 +65,11 @@ def get_model(model_name: str) -> Model:
             case "logistic_regression":
                 return LogisticRegressionModel()
             case "random_forest_classifier":
-                print("RandomForestClassifier is unavailable"
-                      +" due to a conflict between BaseModel and RandomForestClassifier")
+                print("RandomForestClassifier is unavailable due to  a"
+                      + " conflict between BaseModel and RandomForestClassifier")
                 # return RandomForestClassifier()
             case "support_vector_machine":
-                return  Support_Vector_Machine()
+                return Support_Vector_Machine()
             case _:
                 raise NotImplementedError(error_message_1 + error_message_2)
     else:

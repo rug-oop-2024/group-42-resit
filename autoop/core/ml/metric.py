@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from copy import deepcopy
 
 import numpy as np
 from pydantic import BaseModel, PrivateAttr
@@ -78,7 +77,7 @@ class Metric(ABC, BaseModel):
             type[str] (continuous, categorical or undefined)
         """
         return self._name
-    
+
     @property
     def result(self) -> str:
         """
@@ -89,7 +88,7 @@ class Metric(ABC, BaseModel):
             type[str] (continuous, categorical or undefined)
         """
         return self._result
-    
+
     @property
     def data(self) -> str:
         """
@@ -111,7 +110,7 @@ class Metric(ABC, BaseModel):
             type[str] (continuous, categorical or undefined)
         """
         return self._type
-    
+
     def __str__(self) -> str:
         """
         Summary of the results of the metric

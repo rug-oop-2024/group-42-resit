@@ -3,14 +3,10 @@ import streamlit as st
 from app.core.system import AutoMLSystem
 from autoop.core.ml.dataset import Dataset
 from autoop.core.ml.feature import Feature
-from autoop.core.ml.metric import (
-    CATEGORICAL_METRICS, CONTINUOUS_METRICS, get_metric)
-from autoop.core.ml.model import (
-    CLASSIFICATION_MODELS, REGRESSION_MODELS, get_model)
+from autoop.core.ml.metric import CATEGORICAL_METRICS, CONTINUOUS_METRICS, get_metric
+from autoop.core.ml.model import CLASSIFICATION_MODELS, REGRESSION_MODELS, get_model
 from autoop.core.ml.pipeline import Pipeline
 from autoop.functional.feature import detect_feature_types
-from copy import deepcopy
-import os
 
 st.set_page_config(page_title="Modelling", page_icon="📈")
 
@@ -71,7 +67,7 @@ if chosen_features:
     else:
         st.write("Seems you somehow broke the program, well played")
     st.write("RandomForestRegressor and RandomForestClassifier are unavailable"
-             +" due to a conflict with BaseModel")
+             + " due to a conflict with BaseModel")
 
 if chosen_model is not None:
     current_model = get_model(chosen_model)
@@ -99,6 +95,6 @@ if pipeline:
     name = st.text_input("give name")
     version = st.text_input("give version")
     if st.button("save pipeline"):
-       saved_pipeline = pipeline.save_as_artifact(name, version)
-       automl.registry.register(saved_pipeline)
-       st.write("saved succesfully")
+        saved_pipeline = pipeline.save_as_artifact(name, version)
+        automl.registry.register(saved_pipeline)
+        st.write("saved succesfully")

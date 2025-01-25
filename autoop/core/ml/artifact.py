@@ -3,6 +3,7 @@ import os
 from copy import deepcopy
 from pathlib import Path
 
+
 class Artifact():
     """
     Artifact class that allows for saving and reading data from files
@@ -131,7 +132,8 @@ class Artifact():
         full_path = os.path.join("./assets/objects/", self.asset_path)
 
         if not os.path.exists(os.path.split(full_path)[0]):
-            raise FileNotFoundError(f"{os.path.split(full_path)[0]} directory not found")
+            error_message = os.path.split(full_path)[0]
+            raise FileNotFoundError(f"{error_message} directory not found")
         if not os.path.exists(full_path):
             raise FileNotFoundError(f"{full_path} file not found")
         try:

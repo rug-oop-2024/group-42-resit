@@ -1,8 +1,8 @@
-from sklearn.svm import SVC
 from copy import deepcopy
 
 import numpy as np
 from pydantic import PrivateAttr
+from sklearn.svm import SVC
 
 from autoop.core.ml.model.model import ClassificationModel
 

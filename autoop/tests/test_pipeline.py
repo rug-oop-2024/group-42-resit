@@ -6,7 +6,7 @@ from sklearn.datasets import fetch_openml
 from autoop.core.ml.dataset import Dataset
 from autoop.core.ml.feature import Feature
 from autoop.core.ml.metric import Accuracy, MeanSquaredError
-from autoop.core.ml.model import Model, get_model
+from autoop.core.ml.model import get_model
 from autoop.core.ml.pipeline import Pipeline
 from autoop.functional.feature import detect_feature_types
 
