@@ -32,17 +32,6 @@ class MultipleLinearRegression(RegressionModel):
             The slope np.ndarray.
         """
         return deepcopy(self._slope)
-    
-    @property
-    def name(self) -> str:
-        """
-        Getter for the type of this class.
-        Args:
-            None
-        Returns:
-            type[str] (continuous, categorical or undefined)
-        """
-        return self._name
         
 
     def fit(self, observations: np.ndarray, ground_truth: np.ndarray) -> None:

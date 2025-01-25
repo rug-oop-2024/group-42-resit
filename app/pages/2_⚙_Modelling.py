@@ -62,16 +62,6 @@ if not (chosen_target is None or chosen_target == []):
         "choose input",
         features_of_target_type)
 
-# if chosen_target != None and chosen_target.type == "categorical":
-#     raw = deepcopy(current_dataset.read())
-#     data = deepcopy(raw[chosen_target.name])
-#     types = []
-#     for row in data:
-#         if row not in types and type(row) is str:
-#             types.append(row)
-#     categorical_done = True
-#     chosen_type = st.selectbox("select the chosen ... that you want", types, None)
-
 if chosen_features:
     if chosen_target.type == "categorical":
         chosen_model = st.selectbox(
@@ -80,6 +70,8 @@ if chosen_features:
         chosen_model = st.selectbox("Select a model", REGRESSION_MODELS, None)
     else:
         st.write("Seems you somehow broke the program, well played")
+    st.write("RandomForestRegressor and RandomForestClassifier are unavailable"
+             +" due to a conflict with BaseModel")
 
 if chosen_model is not None:
     current_model = get_model(chosen_model)
@@ -94,27 +86,14 @@ if chosen_model is not None:
     current_metrics = [get_metric(metric) for metric in chosen_metrics]
 
 if current_model is not None:
-    # if chosen_target.type == "categorical" and (chosen_type is None or chosen_type == ""):
-    #     st.write("Categorical error: Make sure to choose a type for the categorical data")
-    # else:
-    #     chosen_dataset = current_dataset
-    #     if chosen_target.type == "categorical":
-    #         for index in range(len(data)):
-    #             if data[index] == chosen_type:
-    #                 data[index] = 1
-    #             else:
-    #                 data[index] = 0
-    #         raw[chosen_target.name] = data
-    #         st.write(raw)
-    #         chosen_dataset._data = raw.to_csv(index=False).encode()
-        pipeline = Pipeline(current_metrics,
-                            current_dataset,
-                            current_model,
-                            chosen_features,
-                            chosen_target,
-                            chosen_split)
-        st.write(pipeline)
-        st.write(pipeline.execute())
+    pipeline = Pipeline(current_metrics,
+                        current_dataset,
+                        current_model,
+                        chosen_features,
+                        chosen_target,
+                        chosen_split)
+    st.write(pipeline)
+    st.write(pipeline.execute())
 
 if pipeline:
     name = st.text_input("give name")

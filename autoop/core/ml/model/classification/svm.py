@@ -1,13 +1,13 @@
+from sklearn.svm import SVC
 from copy import deepcopy
 
 import numpy as np
-import sklearn.ensemble as ensemble
 from pydantic import PrivateAttr
 
 from autoop.core.ml.model.model import ClassificationModel
 
 
-class RandomForestClassifier(ClassificationModel):
+class Support_Vector_Machine(ClassificationModel):
     """
     A class that acts as a wrapper for the
     ensemble from scikit-learn.ensemble
@@ -15,12 +15,12 @@ class RandomForestClassifier(ClassificationModel):
 
     _name: str = PrivateAttr("random_forest_classifier")
 
-    _instance_of_random_forest_classifier = (
-        PrivateAttr(default=ensemble.RandomForestClassifier())
+    _instance_of_svc: SVC = (
+        PrivateAttr(default=SVC())
     )
 
     @property
-    def random_forest_classifier(self) -> ensemble.RandomForestClassifier:
+    def svc(self) -> SVC:
         """
         Getter for the instance of random forest classifier.
         Args:
@@ -29,7 +29,7 @@ class RandomForestClassifier(ClassificationModel):
             An instance of Random Forest classifier
                 [ensemble.RandomForestClassifier]
         """
-        return deepcopy(self._instance_of_random_forest_classifier)
+        return deepcopy(self._instance_of_svc)
 
     def fit(self, observations: np.ndarray, ground_truth: np.ndarray) -> None:
         """
@@ -42,16 +42,9 @@ class RandomForestClassifier(ClassificationModel):
             None
         """
         super().fit(observations, ground_truth)
-        self._instance_of_random_forest_classifier.fit(
+        self._instance_of_svc.fit(
             observations, ground_truth)
-        self._parameters.update(
-            {
-                "estimators_": (
-                    self._instance_of_random_forest_classifier.estimators_),
-                "classes_": (
-                    self._instance_of_random_forest_classifier.classes_),
-            }
-        )
+        self._parameters = self._parameters | self._instance_of_svc.get_params()
 
     def predict(self, observations: np.ndarray) -> np.ndarray:
         """
@@ -64,4 +57,4 @@ class RandomForestClassifier(ClassificationModel):
             The predictions of the model as an np.ndarray.
         """
         super().predict(observations)
-        return self._instance_of_random_forest_classifier.predict(observations)
+        return self._instance_of_svc.predict(observations)

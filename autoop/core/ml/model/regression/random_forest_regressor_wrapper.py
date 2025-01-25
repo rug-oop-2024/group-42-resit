@@ -13,8 +13,8 @@ class RandomForestRegressor(RegressionModel):
     Random forest regressor from scikit-learn.linear_model.ensebmle
     """
     _name: str = PrivateAttr(default="RandomForestRegressor")
-    _instance_of_random_forest_regressor: ensemble.RandomForestRegressor = (
-        PrivateAttr(default=ensemble.RandomForestRegressor)
+    _instance_of_random_forest_regressor = (
+        PrivateAttr(default=ensemble.RandomForestRegressor())
     )
 
     @property
@@ -43,9 +43,10 @@ class RandomForestRegressor(RegressionModel):
             observations, ground_truth)
         self._parameters.update(
             {
-                "_coef": self._instance_of_random_forest_regressor.coef_,
-                "_intercept": (
-                    self._instance_of_random_forest_regressor.intercept_),
+                "estimators_": (
+                    self._instance_of_random_forest_classifier.estimators_),
+                "classes_": (
+                    self._instance_of_random_forest_classifier.classes_),
             }
         )
 
