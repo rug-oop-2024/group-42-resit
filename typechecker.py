@@ -1,5 +1,5 @@
 def Type_Checker(value_to_be_checked: object,
-                 type_to_compare_to: object) -> bool:
+                 type_to_compare_to: object | list[object]) -> bool:
     """
     Check whether the imputted value is of the same type
     as the desired type and returns a bool.

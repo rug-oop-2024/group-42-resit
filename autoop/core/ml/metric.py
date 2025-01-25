@@ -221,10 +221,11 @@ class Precision(CategoricalMetric):
         false_negative_dict = {}
 
         for i in range(len(prediction)):
-            prediction_string = prediction[i]
-            ground_truth_string = ground_truth[i]
+            prediction_string = str(prediction[i])
+            ground_truth_string = str(ground_truth[i])
+
             if not Type_Checker(prediction_string, str):
-                Raise_Type_Error(ground_truth_string, str, "prediction[i]")
+                Raise_Type_Error(prediction_string, str, "prediction[i]")
 
             if not Type_Checker(prediction_string, str):
                 Raise_Type_Error(ground_truth_string, str, "ground_truth[i]")
@@ -242,10 +243,12 @@ class Precision(CategoricalMetric):
             else:
                 false_negative_dict[prediction_string] += 1
 
+        print(true_positive_dict, false_negative_dict)
         answer = 0
         for key in true_positive_dict.keys():
-            answer += (true_positive_dict[key] / (
-                true_positive_dict[key] + false_negative_dict[key]))
+            if not (true_positive_dict[key] + false_negative_dict[key] == 0):
+                answer += (true_positive_dict[key] / (
+                    true_positive_dict[key] + false_negative_dict[key]))
 
         return answer / len(true_positive_dict)
 
@@ -274,8 +277,8 @@ class Recall(CategoricalMetric):
         false_positive_dict = {}
 
         for i in range(len(prediction)):
-            prediction_string = prediction[i]
-            ground_truth_string = ground_truth[i]
+            prediction_string = str(prediction[i])
+            ground_truth_string = str(ground_truth[i])
             if not Type_Checker(prediction_string, str):
                 Raise_Type_Error(ground_truth_string, str, "prediction[i]")
 
@@ -370,7 +373,8 @@ class MeanAbsolutePercentageError(ContinuousMetric):
             answer (float): Percentage of error, the lower the better
         """
         super().evaluate(prediction, ground_truth)
-        error = np.divide(np.subtract(ground_truth, prediction), ground_truth)
+        subtract = np.subtract(ground_truth, prediction)
+        error = np.divide(subtract, ground_truth)
         abs_error = np.abs(error)
         answer = np.sum(abs_error) / len(ground_truth) * 100
         return answer

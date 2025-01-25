@@ -200,9 +200,10 @@ Pipeline(
             self._register_artifact(feature_name, artifact)
         # Get the input vectors and output vector,
         # sort by feature name for consistency
-        if target_data.ndim > 1 and self.model.name != "k_nearest_neighbours":
-            target_data = target_data.argmax(1)
-            self._collapsed_y = True
+        if self.model.type == "classification":
+            if target_data.ndim > 1 and self.model.name != "k_nearest_neighbours":
+                target_data = target_data.argmax(1)
+                self._collapsed_y = True
         self._output_vector = target_data
         self._input_vectors = [
             data for (feature_name, data, artifact) in input_results]
