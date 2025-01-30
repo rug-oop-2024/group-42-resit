@@ -27,7 +27,7 @@ class TestPipeline(unittest.TestCase):
         self.features = detect_feature_types(self.dataset)
         self.pipeline = Pipeline(
             dataset=self.dataset,
-            model=get_model("logistic_regression"),
+            model=get_model("multiple_linear_regression"),
             input_features=list(filter(lambda x: x._name != "age",
                                        self.features)),
             target_feature=Feature(name="age", type="continuous"),
