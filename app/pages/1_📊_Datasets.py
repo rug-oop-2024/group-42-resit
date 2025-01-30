@@ -33,7 +33,8 @@ class Management():
 
         dataset = Dataset.from_dataframe(
             name=os.path.basename(name),
-            asset_path=os.path.relpath(full_asset_path, "assets/objects/datasets"),
+            asset_path=os.path.relpath(
+                full_asset_path, "assets/objects/datasets"),
             data=df,
         )
 
