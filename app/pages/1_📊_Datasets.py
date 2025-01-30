@@ -33,7 +33,7 @@ class Management():
 
         dataset = Dataset.from_dataframe(
             name=os.path.basename(name),
-            asset_path=os.path.relpath(full_asset_path, "assets/objects"),
+            asset_path=os.path.relpath(full_asset_path, "assets/objects/datasets"),
             data=df,
         )
 
@@ -78,7 +78,7 @@ uploaded_file = st.file_uploader("Or upload a .csv file", type=["csv"])
 if uploaded_file is not None and uploaded_file.type == "text/csv":
     df = pd.read_csv(io.StringIO(uploaded_file.getvalue().decode()))
     dataset = Dataset.from_dataframe(
-        df, uploaded_file.name, f"datasets/{uploaded_file.name}")
+        df, uploaded_file.name, uploaded_file.name)
     dataset.save(dataset._data)
     management.save(dataset)
 

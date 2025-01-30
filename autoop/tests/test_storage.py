@@ -1,7 +1,9 @@
 
+import os
 import random
 import tempfile
 import unittest
+from pathlib import Path
 
 from autoop.core.storage import LocalStorage, NotFoundError
 
@@ -46,5 +48,8 @@ class TestStorage(unittest.TestCase):
         for key in random_keys:
             self.storage.save(test_bytes, key)
         keys = self.storage.list("test")
-        keys = ["/".join(key.split("\\")[-2:]) for key in keys]
+        keypaths = [Path(os.path.normpath(key)) for key in keys]
+        data = [[path.parent.name, path.name] for path in keypaths]
+        keys = ["/".join(key) for key in data]
+        # keys = ["/".join(key.split("/")[-2:]) for key in keys]
         self.assertEqual(set(keys), set(random_keys))

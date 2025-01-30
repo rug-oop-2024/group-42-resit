@@ -30,7 +30,7 @@ class TestPipeline(unittest.TestCase):
             model=get_model("logistic_regression"),
             input_features=list(filter(lambda x: x._name != "age",
                                        self.features)),
-            target_feature=Feature(name="native-country", type="categorical"),
+            target_feature=Feature(name="age", type="continuous"),
             metrics=[MeanSquaredError(), Accuracy()],
             split=0.8
         )

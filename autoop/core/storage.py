@@ -133,6 +133,8 @@ class LocalStorage(Storage):
         path = self._join_path(prefix)
         self._assert_path_exists(path)
         keys = glob(path + "/**/*", recursive=True)
+        # print(f"\npath: {path}")
+        # print(keys)
         return list(filter(os.path.isfile, keys))
 
     def _assert_path_exists(self, path: str) -> None:

@@ -193,6 +193,7 @@ Pipeline(
         """
         (target_feature_name, target_data, artifact) = preprocess_features(
             [self._target_feature], self._dataset)[0]
+        print(f'"{target_feature_name}":artifact')
         self._register_artifact(target_feature_name, artifact)
         input_results = preprocess_features(
             self._input_features, self._dataset)

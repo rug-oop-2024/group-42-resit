@@ -1,4 +1,5 @@
 import io
+import os
 
 import pandas as pd
 
@@ -35,7 +36,7 @@ class Dataset(Artifact):
 
         return Dataset(
             name=name,
-            asset_path=asset_path,
+            asset_path=os.path.join("datasets", asset_path),
             data=data.to_csv(index=False).encode(),
             version=version,
         )

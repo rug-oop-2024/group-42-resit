@@ -1,5 +1,7 @@
 
 import json
+import os
+from pathlib import Path
 from typing import List, Tuple, Union
 
 from autoop.core.storage import Storage
@@ -108,7 +110,11 @@ class Database():
         # for things that were deleted, we need to remove them from the storage
         keys = self._storage.list("")
         for key in keys:
-            collection, id = key.split("\\")[-2:]
+            # collection, id = key.split("/")[-2:]
+            normpath = os.path.normpath(key)
+            keypath = Path(normpath)
+            collection, id = keypath.parent.name, keypath.name
+
             if not self._data.get(collection, id):
                 self._storage.delete(f"{collection}/{id}")
 
@@ -122,7 +128,10 @@ class Database():
         """
         self._data = {}
         for key in self._storage.list(""):
-            collection, id = key.split("\\")[-2:]
+            # collection, id = key.split("/")[-2:]
+            normpath = os.path.normpath(key)
+            keypath = Path(normpath)
+            collection, id = keypath.parent.name, keypath.name
             data = self._storage.load(f"{collection}/{id}")
             # Ensure the collection exists in the dictionary
             if collection not in self._data:
